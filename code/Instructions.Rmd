@@ -1,7 +1,7 @@
 ---
-title: "Common vector operations using sf"
+title: "Common raster operations using terra"
 author: "Matt Williamson"
-date: "9/9/2021"
+date: "9/16/2021"
 output: html_document
 ---
 
@@ -14,38 +14,45 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The goals for this assignment are to:
 
-- practice vector operations using the `sf` package
+- practice raster operations using the `terra` package
 
-- integrate `tidyverse` verbs into spatial data workflows
+- begin using functional programming for repetitive operations
+
+By the time you work through these steps you should have a `SpatRaster` object with elevation, climate, and land value data that is cropped to Idaho.
+
 
 ## Step 1: Load your packages
-We will rely on the `sf` and `tidyverse` package for this assignment. Load them here
+We will rely on the `terra` and `geodata` packages for this assignment. Load them here
 ```{r packageload}
 
 ```
 
 
-## Step 2: Convert the tabular data into a `sf` object
+## Step 2: Use `geodata` to download some data
 
-We'll be using the [Land Grab University](https://www.landgrabu.org/) data again for this week. You'll find a .csv file in our shared data folder (`/opt/data/session06/`) that has the lattitude and longitude of each land grant university in the CONUS (in the NAD83 projection). Load that object into your `R` session (using `tidyverse::read_csv` or `base::read.csv`) then convert it to an `sf` object with the appropriate projection and attributes. 
+Our spatial analyses are often built upon a mix of data that we (or our colleagues) generated ourselves and data that is freely available through a variety of platforms and portals (see the Resources section of the course page if you're interested in a few other data options). In some cases, very nice people have generated `R` packages to facilitate data access _within_ the `R` script to aid in reproducibility. We'll be using the `geodata` package today, but there are a number of others (the [`FedData` ](https://github.com/ropensci/FedData) package is another handy one). Use the `elevation_30s()` and the `cmip6_world()` functions to download a raster of eleveation for the United States and the projected maximum temperature across the globe (you'll need to use the `?` to access the helpfiles to understand how these functions work). Make sure to assign the result of each to an object (i.e., one object in your workspace should contain the elevation data and one should contain the climate data). Inspect these objects.
+
+```{r dldata}
+
+```
+
+* __Question 1:__ What class is each object returned by the functions? What are their origins, extents, and resolutions? What CRS are they using?
+* __Question 2:__ Look at the helpfile for `rast()`. How might you determine the number of layers in the elevation and climate objects you created? 
+* __Question 3:__ How many layers are in each object?
+
+
+## Step 3: Load your own data
+Now that you know a bit more about the `rast()` function you should be able to use it to load some raster data from a file (rather than download it within a package). You'll find the land value raster from session 4 in our shared folder (`/opt/data/session08/`). Load that here.
 
 ```{r loaddata}
 
 ```
 
-## Step 3: Let's buffer these points
-To get some practice with some of the unary transformations available in `sf`. Once you've done that, estimate the area within each buffered point.
-```{r bufferdata}
 
-```
-* Question 1: Look at the helpfile for `st_buffer`. What arguments does the function except?
+## Step 4: Line up our rasters.
+As we have discussed, before we can do much in terms of spatial analysis, we need to get all of our pieces to line up. This involves checking to make sure each raster has the same CRS, extent, origin, and resolution (note that having the same resolution is mostly a convenience for combining layers in a single object, changing resolution has a lot of consequences for our analyses so do it with some thought). We'll use `project()` and `crop()` to get the data cut down to size and then a combination of `aggregate()`, `disaggregate()`, and `resample()` to get the resolutions and origins aligned.
 
-* Question 2: How does changing the number of segments in the buffer or the change the area?
-
-## Step 4: Let's load some polygons
-In the same shared data folder (`/opt/data/session06/`), you'll find a shapefile depicting all of the parcels in ID that were sold to fund the different university endowments. Load that here and inspect it.
-
-```{r loadpolys}
+```{r alignrast}
 
 ```
 
