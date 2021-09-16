@@ -39,10 +39,11 @@ Our spatial analyses are often built upon a mix of data that we (or our colleagu
 * __Question 1:__ What class is each object returned by the functions? What are their origins, extents, and resolutions? What CRS are they using?
 * __Question 2:__ Look at the helpfile for `rast()`. How might you determine the number of layers in the elevation and climate objects you created? 
 * __Question 3:__ How many layers are in each object?
+* __Question 4:__ How does the way that `terra` handles multiple raster layers differ from that of `raster`? (Hint: look up `?raster::`RasterBrick-class``)
 
 
 ## Step 3: Load your own data
-Now that you know a bit more about the `rast()` function you should be able to use it to load some raster data from a file (rather than download it within a package). You'll find the land value raster from session 4 in our shared folder (`/opt/data/session08/`). Load that here.
+Now that you know a bit more about the `rast()` function you should be able to use it to load some raster data from a file (rather than download it within a package). You'll find the land value raster from session 4 along with Dave Theobald's [human modification index](https://databasin.org/datasets/110a8b7e238444e2ad95b7c17e889b66/) raster in our shared folder (`/opt/data/session08/`). Load them here.
 
 ```{r loaddata}
 
@@ -50,37 +51,30 @@ Now that you know a bit more about the `rast()` function you should be able to u
 
 
 ## Step 4: Line up our rasters.
-As we have discussed, before we can do much in terms of spatial analysis, we need to get all of our pieces to line up. This involves checking to make sure each raster has the same CRS, extent, origin, and resolution (note that having the same resolution is mostly a convenience for combining layers in a single object, changing resolution has a lot of consequences for our analyses so do it with some thought). We'll use `project()` and `crop()` to get the data cut down to size and then a combination of `aggregate()`, `disaggregate()`, and `resample()` to get the resolutions and origins aligned.
+As we have discussed, before we can do much in terms of spatial analysis, we need to get all of our pieces to line up. This involves checking to make sure each raster has the same CRS, extent, origin, and resolution (note that having the same resolution is mostly a convenience for combining layers in a single object, changing resolution has a lot of consequences for our analyses so do it with some thought). We'll use `project()` and `crop()` to get the data cut down to size and then a combination of `aggregate()`, `disaggregate()`, and `resample()` to get the resolutions and origins aligned. Let's use the land value raster as our template raster (i.e., we eventually want all of our data to be cropped to the extent of land value dataset with the same origin, extent, and resolution). Remmeber, that it's usually easier to project the raster with the smaller extent to the appropriate CRS and then move forward with cropping, etc.
 
 ```{r alignrast}
 
 ```
 
-* Question 3: What attributes (variables) does the shapefile contain? Are the geometries valid? What kind of object is it?
+* __Question 5:__ How did you decide whether to use `aggregate()`, `disaggregate()`, or `resample()`? Did any of the layers require a specific function?
 
-* Question 4: How large (in km) are the parcels in the dataset?
+## Step 4b: Try it again with an empty template raster
+One of the nice things about how raster operations work in `R` is that you can move your data into new CRS's, extents, and resolutions even if you don't have a dataset that's currently in that form. This happens by using a blank template raster - one that has the desired extent, origin, CRS, and resolution, but maybe doesn't have values (this is how it's often done in the examples for the packate). Try that here - create a template raster with a 5km resolution, with an extent that is slightly smaller than the land value raster (see `?extent` for details on setting an extent object) and in an equal area projection of your choice. Then, Line up all of your rasters with this this new template raster. Do that here.
 
-## Step 5: Let's smooth these parcels a bit
-Parcel boundaries are often drawn at extremely fine resolutions. This means that there are a lot of vertices for relatively small polygons. Let's smooth some of that detail out using `st_simplify`. Do that here.
-```{r simplepolys}
-
-```
-* Question 5: What arguments does `st_simplify` accept?
-
-* Question 6: How does changing the tolerance affect the look and area of the resulting polygons? Does the geometry remain valid?
-
-## Step 6: Let's get the centroids of the parcels in the original shapefile
-Estimating distances to polygons can be ambiguous because of their irregular shapes and different edge-area ratios. One way to 'standardize' the calculation is to measure distances to the geographic centroid. In order to do that we have to find the centroids of the existing parcel polygons (not the ones you simplified). Do that here.
-```{r polycents}
+```{r aligntemp}
 
 ```
 
-## Step 7: How far is each parcel from the University of Idaho?
-Use the `dplyr::filter` command to select the University of Idaho from your university shapefile, then estimate the distance between the U of I and all of the ID parcel centroids you just estimated.
-```{r centdist}
+
+## Step 5: Let's run some focal statistics
+Now that we've got our data aligned, Let's use a moving window to 'smooth' the data. Use the `focal()` function to take the mean of a 5x5 neighborhood and then a 10x10 neighborhood. This will go faster if you combine all of your aligned layers into a single `SpatRast` object - you should be able to do this by passing the names of your aligned rasters to `rast()`
+
+```{r focalstats}
 
 ```
-* Question 7: How far away is the farthest parcel in the dataset? Who was the original owner of that parcel?
 
-## Bonus: Make a map illustrating the extent of the parcel dataset compared to the university dataset
-Create a polygon that is 10m smaller than the extent of the parcel dataset, then plot the university dataset with your new polygon overlaid. (Hint: you can use `st_bbox` to get the coordinates of the bounding box)
+* __Question 6:__ Use raster math to generate the difference between the two smoothed outpots and plot the result.
+
+## Bonus: Create a function that does all of this. 
+Now that you've seen how tedious it can be to copy and paste things over and over. Try to create a single function that will take any list of `SpatRast` objects; crop, align, and resample them to a template raster; and smooth them. If you're really ambitioius use the examples [here](http://adv-r.had.co.nz/Profiling.html) to figure out which part of your code is the slowest.
