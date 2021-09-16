@@ -1,0 +1,79 @@
+---
+title: "Common vector operations using sf"
+author: "Matt Williamson"
+date: "9/9/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Your assignment
+
+The goals for this assignment are to:
+
+- practice vector operations using the `sf` package
+
+- integrate `tidyverse` verbs into spatial data workflows
+
+## Step 1: Load your packages
+We will rely on the `sf` and `tidyverse` package for this assignment. Load them here
+```{r packageload}
+
+```
+
+
+## Step 2: Convert the tabular data into a `sf` object
+
+We'll be using the [Land Grab University](https://www.landgrabu.org/) data again for this week. You'll find a .csv file in our shared data folder (`/opt/data/session06/`) that has the lattitude and longitude of each land grant university in the CONUS (in the NAD83 projection). Load that object into your `R` session (using `tidyverse::read_csv` or `base::read.csv`) then convert it to an `sf` object with the appropriate projection and attributes. 
+
+```{r loaddata}
+
+```
+
+## Step 3: Let's buffer these points
+To get some practice with some of the unary transformations available in `sf`. Once you've done that, estimate the area within each buffered point.
+```{r bufferdata}
+
+```
+* Question 1: Look at the helpfile for `st_buffer`. What arguments does the function except?
+
+* Question 2: How does changing the number of segments in the buffer or the change the area?
+
+## Step 4: Let's load some polygons
+In the same shared data folder (`/opt/data/session06/`), you'll find a shapefile depicting all of the parcels in ID that were sold to fund the different university endowments. Load that here and inspect it.
+
+```{r loadpolys}
+
+```
+
+* Question 3: What attributes (variables) does the shapefile contain? Are the geometries valid? What kind of object is it?
+
+* Question 4: How large (in km) are the parcels in the dataset?
+
+## Step 5: Let's smooth these parcels a bit
+Parcel boundaries are often drawn at extremely fine resolutions. This means that there are a lot of vertices for relatively small polygons. Let's smooth some of that detail out using `st_simplify`. Do that here.
+```{r simplepolys}
+
+```
+* Question 5: What arguments does `st_simplify` accept?
+
+* Question 6: How does changing the tolerance affect the look and area of the resulting polygons? Does the geometry remain valid?
+
+## Step 6: Let's get the centroids of the parcels in the original shapefile
+Estimating distances to polygons can be ambiguous because of their irregular shapes and different edge-area ratios. One way to 'standardize' the calculation is to measure distances to the geographic centroid. In order to do that we have to find the centroids of the existing parcel polygons (not the ones you simplified). Do that here.
+```{r polycents}
+
+```
+
+## Step 7: How far is each parcel from the University of Idaho?
+Use the `dplyr::filter` command to select the University of Idaho from your university shapefile, then estimate the distance between the U of I and all of the ID parcel centroids you just estimated.
+```{r centdist}
+
+```
+* Question 7: How far away is the farthest parcel in the dataset? Who was the original owner of that parcel?
+
+## Bonus: Make a map illustrating the extent of the parcel dataset compared to the university dataset
+Create a polygon that is 10m smaller than the extent of the parcel dataset, then plot the university dataset with your new polygon overlaid. (Hint: you can use `st_bbox` to get the coordinates of the bounding box)
