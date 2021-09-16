@@ -68,7 +68,7 @@ One of the nice things about how raster operations work in `R` is that you can m
 
 
 ## Step 5: Let's run some focal statistics
-Now that we've got our data aligned, Let's use a moving window to 'smooth' the data. Use the `focal()` function to take the mean of a 5x5 neighborhood and then a 10x10 neighborhood. This will go faster if you combine all of your aligned layers into a single `SpatRast` object - you should be able to do this by passing the names of your aligned rasters to `rast()`
+Now that we've got our data aligned, Let's use a moving window to 'smooth' the data. Use the `focal()` function to take the mean of a 5x5 neighborhood and then a 10x10 neighborhood. You can do this for whichever raster you choose. _Bonus_ create a function that you apply to a multi-layer `SpatRast` object (see the `lapp` function in `terra`) 
 
 ```{r focalstats}
 
