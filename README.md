@@ -35,4 +35,8 @@ We'll be using the data and model results from assingment 3. Some of them are lo
 
 2. Make a multi-panel figure showing the predictions of your random forests model, your logistic regression model, and the difference between the two predictions (i.e., you should have 3 figures). Remember to include elements that help the reader orient to the map and panel labels. Show your code and the final map.
 
-3. Now make a multipanel plot with the block groups  on the y-axis and the predicted probability of a cell phone tower (with confidence intervals) on the x-axis for both models (i.e., use fill or color to distinguish the predictions for each model). Make a separate plot for each state (i.e., using `facet_wrap` or `patchwork`).  
+3. Now make a multipanel plot with the block groups  on the y-axis and the predicted probability of a cell phone tower (with confidence intervals) on the x-axis for both models (i.e., use fill or color to distinguish the predictions for each model). Make a separate plot for each state (i.e., using `facet_wrap` or `patchwork`).
+
+4. Finally, make an interactive map that allows you to explore the different predictions spatially. You should be able to click on the different portions of the map and display the mean prediction and the confidence intervals.
+
+5. In thinking about the plots you made in steps 3 and 4, what are some of the benefits of each approach? What are the drawbacks? How might your audience determine which plot you use?    
