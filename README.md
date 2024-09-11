@@ -25,15 +25,15 @@ By the end of this assignment, you should be able to:
 
 ## The Data
 
-We will be using the landmarks data table, the shapefile from the Climate and Economic Justice Screening Tool, and the wildfire hazard raster from the previous two assignments. I've moved the versions for this assignment into the `opt/data/2023/assignment04/` folder to make life easier. 
+We will be using the landmarks data table and the shapefile from the Climate and Economic Justice Screening Tool from previous assignments. I've moved the versions for this assignment into the `/opt/data/data/assignment04/` folder to make life easier. 
 
 ## The Assignment
 
-1. Load the `cejst_pnw.shp` use the correct predicates to determine whether the geometries are valid and to check for empty geometries. If there are empty geometries, determine which rows have empty geometries (show your code).
+1. Load the `cejst_nw.shp` use the correct predicates to determine whether the geometries are valid and to check for empty geometries. If there are empty geometries, determine which rows have empty geometries (show your code).
 
 2. Load the `landmarks_ID.csv` table and convert it to an `sf` object. Now filter to just the hospital records (`MTFCC == "K1231"`) and calculate the distance between all of the hospitals in Idaho. Note that you'll have to figure out the CRS for the landmarks dataset...
 
-3. Filter the `cejst_pnw.shp` to just those records from Ada County. Then filter again to return the row with the highest annual loss rate for agriculture (2 hints: you'll need to look at the `columns.csv` file in the data folder to figure out which column is the expected agricultural loss rate and you'll need to set `na.rm=TRUE`when looking for the maximum value). Calculate the area of the resulting polygon.
+3. Filter the `cejst_nw.shp` to just those records from Ada County. Then filter again to return the row with the highest annual loss rate for agriculture (2 hints: you'll need to look at the `columns.csv` file in the data folder to figure out which column is the expected agricultural loss rate and you'll need to set `na.rm=TRUE`when looking for the maximum value). Calculate the area of the resulting polygon.
 
 4. Finally, look at the helpfile for the `terra::adjacent` command. How do you specify which cells you'd like to get the adjacency matrix for? How do you return only the cells touching your cells of interest? Use the example in the helpfile to illustrate how you'd do this on a toy dataset - this will help you learn to ask minimally reproducible examples.
 
